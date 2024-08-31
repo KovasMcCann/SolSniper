@@ -1,6 +1,7 @@
 import requests
 
-RPC_URL = 'https://api.mainnet-beta.solana.com'
+#RPC_URL = 'https://api.mainnet-beta.solana.com'
+RPC_URL = 'http://entrypoint.testnet.solana.com:8001/'
 
 def get_account_info(public_key):
     response = requests.post(RPC_URL, json={
