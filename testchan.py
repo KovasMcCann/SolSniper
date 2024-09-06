@@ -1,50 +1,52 @@
 import requests
+import json
 
-#RPC_URL = 'https://api.mainnet-beta.solana.com'
-RPC_URL = 'http://entrypoint.testnet.solana.com:8001/'
+# Define the Solana JSON RPC endpoint
+SOLANA_RPC_URL = 'https://api.mainnet-beta.solana.com'
 
-def get_account_info(public_key):
-    response = requests.post(RPC_URL, json={
+def send_request(method, params=None):
+    headers = {'Content-Type': 'application/json'}
+    payload = {
         "jsonrpc": "2.0",
         "id": 1,
-        "method": "getAccountInfo",
-        "params": [public_key]
-    })
+        "method": method,
+        "params": params or []
+    }
+    response = requests.post(SOLANA_RPC_URL, headers=headers, data=json.dumps(payload))
     return response.json()
 
-def get_recent_transactions(public_key):
-    response = requests.post(RPC_URL, json={
-        "jsonrpc": "2.0",
-        "id": 1,
-        "method": "getConfirmedSignaturesForAddress2",
-        "params": [public_key]
-    })
-    return response.json()
+def get_account_transactions(pubkey, limit=10):
+    result = send_request("getConfirmedSignaturesForAddress2", [pubkey, {"limit": limit}])
+    return result
 
 def get_transaction_details(signature):
-    response = requests.post(RPC_URL, json={
-        "jsonrpc": "2.0",
-        "id": 1,
-        "method": "getConfirmedTransaction",
-        "params": [signature]
-    })
-    return response.json()
+    # Updated method: use getTransaction to check for new parameters or methods
+    result = send_request("getTransaction", [signature, {"encoding": "jsonParsed"}])
+    return result
 
-def analyze_wallet(public_key):
-    # Get account info
-    account_info = get_account_info(public_key)
-    print("Account Info:", account_info)
+def main():
+    print("Solana Transaction History")
+    pubkey = input("Enter account public key: ")
+    limit = int(input("Enter the number of recent transactions to retrieve: "))
+
+    # Get recent transaction signatures
+    transaction_signatures = get_account_transactions(pubkey, limit)
     
-    # Get recent transactions
-    transactions = get_recent_transactions(public_key)
-    print("Recent Transactions:", transactions)
+    if 'error' in transaction_signatures:
+        print(f"Error fetching transaction signatures: {transaction_signatures['error']['message']}")
+        return
+
+    print(f"\nRecent Transactions for {pubkey}:\n")
     
-    # Get details for each transaction
-    transaction_signatures = [tx['signature'] for tx in transactions['result']]
-    for signature in transaction_signatures:
-        transaction_details = get_transaction_details(signature)
-        print("Transaction Details:", transaction_details)
+    for tx in transaction_signatures['result']:
+        signature = tx['signature']
+        print(f"Signature: {signature}")
+        details = get_transaction_details(signature)
+        if 'error' in details:
+            print(f"Error fetching transaction details: {details['error']['message']}")
+        else:
+            print(json.dumps(details, indent=4))
+        print("-" * 80)
 
 if __name__ == "__main__":
-    public_key = "3boWpKTf5keVKmdhbU7HnKmFjuCVyfa9sVAsEEb4WfJt"  # Replace with the actual wallet public key
-    analyze_wallet(public_key)
+    main()
