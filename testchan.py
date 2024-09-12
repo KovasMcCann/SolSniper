@@ -47,6 +47,6 @@ def main():
         else:
             print(json.dumps(details, indent=4))
         print("-" * 80)
-        alskdfj
 if __name__ == "__main__":
     main()
+    # test
