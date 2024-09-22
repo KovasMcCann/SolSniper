@@ -1,12 +1,11 @@
 [package]
 name = "rpc"
 version = "0.1.0"
+edition = "2021"
 authors = ["Kovas McCann <KovasMcCann@firemail.cc>"]
 
 [dependencies]
-tokio-rustls = "0.23" 
-#tokio = { version = "1", features = ["full"] }
-#tokio-tungstenite = { version = "0.17", features = ["tokio-tls"] }  # Make sure tokio-tls is included
+tokio = { version = "1", features = ["full"] }
+reqwest = { version = "0.11", features = ["json"] }
 serde = { version = "1", features = ["derive"] }
 serde_json = "1.0"
-futures-util = "0.3"
