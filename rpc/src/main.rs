@@ -10,7 +10,13 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let payload = json!({
         "jsonrpc": "2.0",
         "id": 1,
-        "method": "getHealth",
+        "method": "getAccountInfo",
+        "params": [
+            "9KM8rFNhH7uLejNBRyc2HTTz2utPKqHaj2FCSngkpump",
+            {
+                "encoding": "base58"
+            }
+        ] 
     });
 
     // Send the POST request
