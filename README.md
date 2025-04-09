@@ -1,6 +1,1 @@
-# SolSniper
 
-| Idea | Description |
-|------|-------------|
-|Black Swan Detector | Use machine learning to detect black swan events on [pump.fun](https://pump.fun) |
-|Arbitrage | Become a market maker for solana meme coins |
